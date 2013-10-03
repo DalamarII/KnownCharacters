@@ -17,6 +17,10 @@ str = ''
 file.seek(0)
 for line in file:
     str = line[:len(line)-1]
+
+    if not str or str.isspace():
+        continue
+    
     index = findChar(str, charDb)
     if index:
         print("Warning: duplicate character %s found at %d and %d\n" %
