@@ -1,16 +1,26 @@
 # Known Characters.py
 file = open('db.txt', 'a+', -1, 'utf-8')
 
+# TODO: charDb should really be a hashtable with characters as keys
 charDb = []
 newCharDb = []
+
+# find the given character c in the database db. If found, returns the index of
+# the first match found. Else returns None
+def findChar(c, db):
+    for i, v in enumerate(db):
+        if c == v:
+            return i
 
 pos = 0
 str = ''
 file.seek(0)
 for line in file:
     str = line[:len(line)-1]
-    if str in charDb:
-        print("Warning: duplicate found at %d, %s already in db\n" % (pos+1, str))
+    index = findChar(str, charDb)
+    if index:
+        print("Warning: duplicate character %s found at %d and %d\n" %
+              (str, index+1, pos+1))
     else:
         charDb.insert(pos, str)
     pos += 1
