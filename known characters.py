@@ -58,10 +58,11 @@ while not quit:
                 newCharDb.append(character)
                 charDb.append(character)
     elif "search" == cmd:
-        if character in charDb:
-            print("Found\n")
+        ndx = findChar(character, charDb)
+        if not ndx:
+            print("Not Found\n")
         else:
-            print("Not found\n")
+            print("Found at index", ndx+1)
     elif cmd == "quit":
         quit = True
 
