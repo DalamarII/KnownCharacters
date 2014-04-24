@@ -1,4 +1,5 @@
 # Known Characters.py
+
 file = open('db.txt', 'a+', -1, 'utf-8')
 
 # TODO: charDb should really be a hashtable with characters as keys
@@ -33,6 +34,9 @@ quit = False
 while not quit:
     userInput = input("> ")
 
+    if not userInput:
+        continue # ignore empty inputs
+
     args = userInput.split(' ')
     cmd = args[0]
 
@@ -57,14 +61,15 @@ while not quit:
             else:
                 newCharDb.append(character)
                 charDb.append(character)
-    elif "search" == cmd:
+    elif cmd == "quit":
+        quit = True
+    else: # by default just do a search on characters
+        character = args[0]
         ndx = findChar(character, charDb)
         if not ndx:
             print("Not Found\n")
         else:
             print("Found at index", ndx+1)
-    elif cmd == "quit":
-        quit = True
 
 for i in range(0, len(newCharDb)):
     file.write("%c\n" % (newCharDb[i]))
