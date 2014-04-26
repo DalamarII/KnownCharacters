@@ -64,12 +64,12 @@ while not quit:
     elif cmd == "quit":
         quit = True
     else: # by default just do a search on characters
-        character = args[0]
-        ndx = findChar(character, charDb)
-        if not ndx:
-            print("Not Found\n")
-        else:
-            print("Found at index", ndx+1)
+        for c in userInput:
+            ndx = findChar(c, charDb)
+            if not ndx:
+                print(c + ": Not Found")
+            else:
+                print(c + ": Found at index", ndx+1)
 
 for i in range(0, len(newCharDb)):
     file.write("%c\n" % (newCharDb[i]))
