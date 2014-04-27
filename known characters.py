@@ -1,26 +1,28 @@
 # Known Characters.py
 
-file = open('db.txt', 'a+', -1, 'utf-8')
-
-# TODO: charDb should really be a hashtable with characters as keys
-charDb = []
-newCharDb = []
+class DbElem:
+    def __init__(self, trad = None, simple = None, index = -1):
+        self.traditional = trad
+        self.simple = simple
+        self.index = index
 
 # find the given character c in the database db. If found, returns the index of
 # the first match found. Else returns None
 def findChar(c, db):
-    for i, v in enumerate(db):
-        if c == v:
-            return i
+    if c in db:
+        return db[c].index
 
 def initDb(file):
     '''
         Input:
             A file object to initialize the database with
+            The file should be follow this format:
+
+                Trad Char[,Simpl Char]
 
         Initializes the database using the given file object
     '''
-    pos = 0
+    pos = 1
     str = ''
     file.seek(0)
     for line in file:
@@ -28,14 +30,30 @@ def initDb(file):
 
         if not str or str.isspace():
             continue
+
+        c_list = str.split(',')
+        key = c_list[0]
+        simple = None
+        if len(c_list) > 1:
+            simple = c_list[1]
     
-        index = findChar(str, charDb)
-        if index:
+        if key in charDb:
             print("Warning: duplicate character %s found at %d and %d\n" %
-                  (str, index+1, pos+1))
+                  (str, charDb[key].index, pos))
         else:
-            charDb.insert(pos, str)
+            value = DbElem(trad = key, index = pos, simple = simple)
+            charDb[key] = value
         pos += 1
+
+# -----------------------------------------------------------
+
+file = open('db.txt', 'a+', -1, 'utf-8')
+
+# a database with traditional character as keys and DbElem objects as values
+charDb = {}
+
+# TODO: newCharDb should really be a hashtable with characters as keys
+newCharDb = []
 
 initDb(file)
 
@@ -78,7 +96,7 @@ while not quit:
             if not ndx:
                 print(c + ": Not Found")
             else:
-                print(c + ": Found at index", ndx+1)
+                print(c + ": Found at index", ndx)
 
 for i in range(0, len(newCharDb)):
     file.write("%c\n" % (newCharDb[i]))
