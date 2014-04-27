@@ -13,22 +13,31 @@ def findChar(c, db):
         if c == v:
             return i
 
-pos = 0
-str = ''
-file.seek(0)
-for line in file:
-    str = line[:len(line)-1]
+def initDb(file):
+    '''
+        Input:
+            A file object to initialize the database with
 
-    if not str or str.isspace():
-        continue
+        Initializes the database using the given file object
+    '''
+    pos = 0
+    str = ''
+    file.seek(0)
+    for line in file:
+        str = line[:len(line)-1]
+
+        if not str or str.isspace():
+            continue
     
-    index = findChar(str, charDb)
-    if index:
-        print("Warning: duplicate character %s found at %d and %d\n" %
-              (str, index+1, pos+1))
-    else:
-        charDb.insert(pos, str)
-    pos += 1
+        index = findChar(str, charDb)
+        if index:
+            print("Warning: duplicate character %s found at %d and %d\n" %
+                  (str, index+1, pos+1))
+        else:
+            charDb.insert(pos, str)
+        pos += 1
+
+initDb(file)
 
 quit = False
 while not quit:
