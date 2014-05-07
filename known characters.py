@@ -1,18 +1,16 @@
 # Known Characters.py
 
-class DbElem:
-    def __init__(self, trad = None, simple = None, index = -1):
-        self.traditional = trad
-        self.simple = simple
-        self.index = index
-
 # find the given character c in the database db. If found, returns the index of
 # the first match found. Else returns None
-def findChar(c, db):
-    if c in db:
-        return db[c].index
+def findChar(c, tDb = None, sDb = None):
+    if tDb:
+        if c in tDb:
+            return tDb[c]
+    elif sDb:
+        if c in sDb:
+            return sDb[c]
 
-def initDb(file):
+def initDb(file, tDb, sDb):
     '''
         Input:
             A file object to initialize the database with
@@ -32,30 +30,38 @@ def initDb(file):
             continue
 
         c_list = str.split(',')
-        key = c_list[0]
+        trad = c_list[0]
         simple = None
         if len(c_list) > 1:
             simple = c_list[1]
-    
-        if key in charDb:
+
+        ndx = findChar(trad, tDb, None)
+        if not ndx:
+            ndx = findChar(simple, None, sDb)
+            
+        if ndx:
             print("Warning: duplicate character %s found at %d and %d\n" %
-                  (str, charDb[key].index, pos))
+                  (str, ndx, pos))
         else:
-            value = DbElem(trad = key, index = pos, simple = simple)
-            charDb[key] = value
+            tDb[trad] = pos
+            if simple:
+                sDb[simple] = pos
+                
         pos += 1
 
 # -----------------------------------------------------------
 
 file = open('db.txt', 'a+', -1, 'utf-8')
 
-# a database with traditional character as keys and DbElem objects as values
-charDb = {}
+# databases with characters as keys and physical index as values
+traditionalDb = {}
+simpleDb = {}
+
 
 # TODO: newCharDb should really be a hashtable with characters as keys
 newCharDb = []
 
-initDb(file)
+initDb(file, traditionalDb, simpleDb)
 
 quit = False
 while not quit:
@@ -92,7 +98,7 @@ while not quit:
         quit = True
     else: # by default just do a search on characters
         for c in userInput:
-            ndx = findChar(c, charDb)
+            ndx = findChar(c, traditionalDb, simpleDb)
             if not ndx:
                 print(c + ": Not Found")
             else:
